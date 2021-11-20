@@ -14,7 +14,6 @@ machine.set_alphabet(linearize_key(key))
 
 # encrypt plaintext file
 with open("plaintext.txt") as file:
-	print(file.read())
 	ciphertext = machine.encrypt(file.read())
 
 # annealing scedule function
