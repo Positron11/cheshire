@@ -43,3 +43,4 @@ nodeLanguageServer/**
 nodeLanguageServer.*/**
 dist/**
 Scratchpad/
+decrypted.txt
