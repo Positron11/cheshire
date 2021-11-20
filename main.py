@@ -44,7 +44,7 @@ best, score = simulated_anneal(
 
 # print result
 machine.set_alphabet(linearize_key(best))
-print(machine.decrypt(ciphertext))
+print(f"\n***\n\n{machine.decrypt(ciphertext)}")
 
 # close dataset
 dataset.close()
