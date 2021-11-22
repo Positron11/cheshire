@@ -15,9 +15,9 @@ def language_score(text_file:TextIO, ngram_length:int, ngram_type:str, frequency
 		ngrams = [plaintext[i:i+ngram_length] for i in range(len(plaintext) - (ngram_length - 1))]
 	
 	# create ngram ranked dictionary
-	distinct_ngram_list = [ngram for n, ngram in enumerate(ngrams) if ngram not in ngrams[:n]]
-	ngram_frequency_list = [ngrams.count(ngram) for ngram in distinct_ngram_list]
-	ngram_dictionary = {distinct_ngram_list[i]:ngram_frequency_list[i] for i in range(len(distinct_ngram_list))}
+	ngram_frequencies = [ngrams.count(ngram) for ngram in ngrams]
+	ranked_ngram_frequencies = sorted([frequency for n, frequency in enumerate(ngram_frequencies) if frequency not in ngram_frequencies[:n]], reverse=True)
+	ranked_ngrams = {ngram:ranked_ngram_frequencies.index(ngrams.count(ngram)) + 1 for ngram in ngrams}
 
 	# initialize scores and counts
 	language_score = 0
