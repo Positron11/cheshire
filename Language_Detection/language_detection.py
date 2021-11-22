@@ -1,3 +1,4 @@
+from numpy import abs
 import re, unicodedata
 from typing import TextIO
 
@@ -5,14 +6,14 @@ from typing import TextIO
 def language_score(text_file:TextIO, ngram_length:int, ngram_type:str, frequency_dataset:TextIO, verbose:bool=False) -> float:
 	# sanitize text
 	sanitized_text = ''.join(c for c in unicodedata.normalize('NFD', text_file.read()) if unicodedata.category(c) != 'Mn')
-	
+
 	# strip non-alphabetic characters and extract ngrams from stripped text
-	if ngram_type == "word":
-		plaintext = re.sub('[^a-zA-Z ]+', '', sanitized_text).upper()
-		ngrams = [word[i:i+ngram_length] for word in plaintext.split() for i in range(len(word) - (ngram_length - 1))]
-	elif ngram_type == "continuous":
-		plaintext = re.sub('[^a-zA-Z]+', '', sanitized_text).upper()
-		ngrams = [plaintext[i:i+ngram_length] for i in range(len(plaintext) - (ngram_length - 1))]
+	if ngram_type == "word": # word-by-word ngram extraction
+		stripped_text = re.sub('[^a-zA-Z ]+', '', sanitized_text).upper()
+		ngrams = [word[i:i+ngram_length] for word in stripped_text.split() for i in range(len(word) - (ngram_length - 1))]
+	elif ngram_type == "continuous": # continuous (between words) ngram extraction
+		stripped_text = re.sub('[^a-zA-Z]+', '', sanitized_text).upper()
+		ngrams = [stripped_text[i:i+ngram_length] for i in range(len(stripped_text) - (ngram_length - 1))]
 	
 	# create ngram ranked dictionary
 	ngram_frequencies = [ngrams.count(ngram) for ngram in ngrams]
@@ -21,8 +22,8 @@ def language_score(text_file:TextIO, ngram_length:int, ngram_type:str, frequency
 
 	# initialize scores and counts
 	language_score = 0
-	ngrams_found = 0
-	dataset_ngram_count = 0
+	dataset_length = 0
+	ngrams_found = list()
 
 	# go through each fourgram in dataset
 	for line_number, line in enumerate(frequency_dataset, 1):
@@ -30,26 +31,29 @@ def language_score(text_file:TextIO, ngram_length:int, ngram_type:str, frequency
 		data = {"ngram": line.split()[0], "frequency": line.split()[1]}
 
 		# if fourgram in text
-		if data["ngram"] in ngram_dictionary.keys():
+		if data["ngram"] in ngrams:
 			# increment scores and counters
-			language_score += line_number - ngram_dictionary[data["ngram"]]
+			language_score += abs(line_number - ranked_ngrams[data["ngram"]])
+			ngrams_found.append(data["ngram"])
 
-			# increment number of ngrams found
-			ngrams_found += 1
-
-			# # verbose output
+			# verbose output
 			if verbose:
-				print(f"found: {data['ngram']} | ngram diff: {line_number - ngram_dictionary[data['ngram']]} | total score: {language_score}")
+				print(f"found: {data['ngram']} | ngram diff: abs({line_number - ranked_ngrams[data['ngram']]}) | total score: {language_score}")
 	
 		# increment dataset ngram count
-		dataset_ngram_count += 1
+		dataset_length += 1
 
 	# reset read pointers
 	text_file.seek(0)
 	frequency_dataset.seek(0)
 
-	# add unfound ngram penalty
-	language_score += (len(ngram_dictionary) - ngrams_found) * dataset_ngram_count
+	# add unfound ngram penalty and normalize score for text size
+	language_score = (language_score + ((len(ranked_ngrams) - len(ngrams_found)) * dataset_length)) / len(ranked_ngrams)
 	
+	# verbose output
+	if verbose:
+		print(f'{"="*50}\nUnfound: {", ".join([ngram for ngram in ranked_ngrams.keys() if ngram not in ngrams_found])}')
+		print(f"Final score: {language_score}")
+
 	# return final score
-	return language_score / len(ngram_dictionary)
+	return language_score
