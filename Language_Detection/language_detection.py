@@ -52,8 +52,8 @@ def language_score(text_file:TextIO, ngram_length:int, ngram_type:str, frequency
 	
 	# verbose output
 	if verbose:
-		print(f'{"="*50}\nUnfound: {", ".join([ngram for ngram in ranked_ngrams.keys() if ngram not in ngrams_found])}')
-		print(f"Final score: {language_score}")
+		print(f'\nUnfound: {", ".join([ngram for ngram in ranked_ngrams.keys() if ngram not in ngrams_found]) if len(ngrams_found) != len(ranked_ngrams.keys()) else "None"}')
+		print(f"Final score: {language_score:.3f}")
 
 	# return final score
 	return language_score
