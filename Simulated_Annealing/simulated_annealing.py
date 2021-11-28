@@ -16,7 +16,7 @@ def simulated_anneal(initial_point, step_function:Callable, objective_function:C
 	# run the algorithm
 	for i in range(iterations):
 		# calculate temperature for current epoch 
-		current_temperature = annealing_schedule_function(current_temperature, i)
+		current_temperature = annealing_schedule_function(initial_temperature, i)
 
 		for j in range(transitions):
 			# load new point into buffer

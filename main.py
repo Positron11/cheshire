@@ -1,4 +1,3 @@
-from os import remove
 from secretpy import Playfair, CryptMachine
 from Language_Detection.language_detection import language_score
 from Simulated_Annealing.simulated_annealing import simulated_anneal
@@ -17,8 +16,8 @@ with open("Plaintexts/sentence.txt") as file:
 	ciphertext = machine.encrypt(file.read())
 
 # annealing scedule function
-def annealing_schedule(current_temperature, i):
-	return current_temperature * 0.9999
+def annealing_schedule(initial_temperature, i):
+	return initial_temperature - 8 * i
 
 def objective_function(key):
 	# set key
@@ -38,7 +37,7 @@ best, score = simulated_anneal(
 	objective_function=objective_function, 
 	step_function=shuffle_key, 
 	annealing_schedule_function=annealing_schedule, 
-	iterations=1000, transitions=50,
+	iterations=5000, transitions=10,
 	initial_temperature=50000, 
 	verbose="short"
 )
