@@ -23,27 +23,27 @@ def linearize_key(key:list) -> list:
 
 
 # shuffle playfair cipher key
-def shuffle_key(key:list) -> list:
+def shuffle_key(key:list, mode:str="") -> list:
 	# get random value between 0 and 1
 	selector = rand()
 
 	# reverse key
-	if 0.98 <= selector < 1.00:
+	if (not mode and 0.98 <= selector < 1.00) or mode == "rwk":
 		key.reverse()
 		for row in key:
 			row.reverse()
 
 	# flip all columns
-	if 0.96 <= selector < 0.98:
+	if (not mode and 0.96 <= selector < 0.98) or mode == "rac":
 		key.reverse()
 
 	# flip all rows
-	if 0.94 <= selector < 0.96:
+	if (not mode and 0.94 <= selector < 0.96) or mode == "rar":
 		for row in key:
 			row.reverse()
 
 	# flip random column
-	if 0.92 <= selector < 0.94:
+	if (not mode and 0.92 <= selector < 0.94) or mode == "rrc":
 		# get random column
 		column_index = randint(0,4)
 
@@ -56,11 +56,11 @@ def shuffle_key(key:list) -> list:
 			row[column_index] = column[key.index(row)]
 
 	# flip random row
-	if 0.90 <= selector < 0.92:
+	if (not mode and 0.90 <= selector < 0.92) or mode == "rrr":
 		key[randint(0,4)].reverse()
 
 	# swap two random letters
-	if 0 <= selector < 0.90:
+	if (not mode and 0 <= selector < 0.90) or mode == "swp":
 		# initialize index variables
 		x, y, i, j = 0, 0, 0, 0
 
