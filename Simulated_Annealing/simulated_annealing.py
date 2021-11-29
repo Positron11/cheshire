@@ -15,9 +15,6 @@ def simulated_anneal(initial_point, step_function:Callable, objective_function:C
 
 	# run the algorithm
 	for i in range(iterations):
-		# calculate temperature for current epoch 
-		current_temperature = annealing_schedule_function(initial_temperature, i)
-
 		for j in range(transitions):
 			# load new point into buffer
 			buffer = step_function(current)
@@ -48,6 +45,9 @@ def simulated_anneal(initial_point, step_function:Callable, objective_function:C
 				step_counter = f"[it:{i:0{len(str(iterations))}}|tr:{j:0{len(str(transitions))}}|te:{current_temperature:.2f}]>"
 				buffer_evaluation = f"""{f'f({str(buffer)[:25]}{"..." if len(str(buffer)) > 25 else ""}) = ' if verbose == "long" else ''}{buffer_evaluated:10.2f}"""
 				print(f"{step_counter} {buffer_evaluation} | CURRENT: {current_evaluated:10.2f} | BEST: {best_evaluated:10.2f} || DIFF: {diff:10.2f} | MET: {metropolis_acceptance}")
+
+		# calculate temperature for new epoch 
+		current_temperature = annealing_schedule_function(initial_temperature, i)
 
 	# return best point and best point score
 	return [best, best_evaluated]
