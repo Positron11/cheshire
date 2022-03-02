@@ -48,7 +48,7 @@ def language_score(text_file:TextIO, ngram_length:int, ngram_type:str, frequency
 	frequency_dataset.seek(0)
 
 	# add unfound ngram penalty and normalize score for text size
-	language_score = (language_score + ((len(ranked_ngrams) - len(ngrams_found)) * dataset_length)) / len(ranked_ngrams)
+	language_score = (language_score + ((len(ranked_ngrams) - len(ngrams_found)) * dataset_length)) / (len(ranked_ngrams) if ranked_ngrams else 1)
 	
 	# verbose output
 	if verbose:
