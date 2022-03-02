@@ -3,8 +3,9 @@ from Language_Detection.language_detection import language_score
 from Simulated_Annealing.simulated_annealing import simulated_anneal
 from Playfair_Keygen.playfair_keygen import generate_key, linearize_key, shuffle_key
 
-# open dataset
+# open dataset and test file
 dataset = open(f"Language_Detection/Datasets/4grams_continuous.txt", "r")
+test_file = open("Plaintexts/plaintext_1.txt");
 
 # create cryptmachine
 key = generate_key()
@@ -12,8 +13,7 @@ machine = CryptMachine(Playfair())
 machine.set_alphabet(linearize_key(key))
 
 # encrypt plaintext file
-with open("Plaintexts/sentence.txt") as file:
-	ciphertext = machine.encrypt(file.read())
+ciphertext = machine.encrypt(test_file.read())
 
 # annealing scedule function
 def annealing_schedule(initial_temperature, i):
@@ -46,6 +46,7 @@ best, score = simulated_anneal(
 machine.set_alphabet(linearize_key(best))
 print(f"\n***\n\n{machine.decrypt(ciphertext)}")
 
-# close dataset
+# close dataset and test file
 dataset.close()
+test_file.close()
 
