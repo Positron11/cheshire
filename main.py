@@ -16,8 +16,8 @@ machine.set_alphabet(linearize_key(key))
 ciphertext = machine.encrypt(test_file.read())
 
 # annealing scedule function
-def annealing_schedule(initial_temperature, i):
-	return initial_temperature - 8 * i
+def annealing_schedule(current_temperature):
+	return (0.993 * current_temperature) + 0.0001
 
 def objective_function(key):
 	# set key
@@ -37,8 +37,8 @@ best, score = simulated_anneal(
 	objective_function=objective_function, 
 	step_function=shuffle_key, 
 	annealing_schedule_function=annealing_schedule, 
-	iterations=5000, transitions=10,
-	initial_temperature=50000, 
+	iterations=500, transitions=100,
+	initial_temperature=100000, 
 	verbose="short"
 )
 

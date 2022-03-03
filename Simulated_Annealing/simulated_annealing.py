@@ -47,7 +47,7 @@ def simulated_anneal(initial_point, step_function:Callable, objective_function:C
 				print(f"{step_counter} {buffer_evaluation} | CURRENT: {current_evaluated:10.2f} | BEST: {best_evaluated:10.2f} || DIFF: {diff:10.2f} | MET: {metropolis_acceptance}")
 
 		# calculate temperature for new epoch 
-		current_temperature = annealing_schedule_function(initial_temperature, i)
+		current_temperature = annealing_schedule_function(current_temperature)
 
 	# return best point and best point score
 	return [best, best_evaluated]
