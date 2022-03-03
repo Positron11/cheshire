@@ -33,7 +33,12 @@ def objective_function(key):
 
 # custom verbose function
 def custom_verbose_function(**kwargs):
-	return f"{''.join(linearize_key(kwargs['key']))} | {machine.decrypt(ciphertext)}"
+	decrypted = machine.decrypt(ciphertext)
+	current_evaluated = kwargs['current_evaluated']
+	current_key = ''.join(linearize_key(kwargs['current']))
+	best_evaluated = kwargs['best_evaluated']
+	best_key = ''.join(linearize_key(kwargs['best']))
+	return f"{decrypted}\nKey: {current_key} ({current_evaluated}) | Best: {best_key} ({best_evaluated})\n"
 
 # anneal
 best, score = simulated_anneal(
