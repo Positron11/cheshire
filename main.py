@@ -31,6 +31,10 @@ def objective_function(key):
 	with open("decrypted.txt", "r") as textfile:
 		return language_score(text_file=textfile, ngram_length=4, ngram_type="continuous", frequency_dataset=dataset)
 
+# custom verbose function
+def custom_verbose_function(**kwargs):
+	return f"{''.join(linearize_key(kwargs['key']))} | {machine.decrypt(ciphertext)}"
+
 # anneal
 best, score = simulated_anneal(
 	initial_point=generate_key(ciphertext), 

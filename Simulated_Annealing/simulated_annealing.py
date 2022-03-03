@@ -1,8 +1,8 @@
-from typing import Callable
 from numpy import exp, random
+from typing import Callable, Union
 
 # simulated annealing algorithm
-def simulated_anneal(initial_point, step_function:Callable, objective_function:Callable, annealing_schedule_function:Callable, iterations:int, transitions:int, initial_temperature:float, verbose:str="") -> list:
+def simulated_anneal(initial_point, step_function:Callable, objective_function:Callable, annealing_schedule_function:Callable, iterations:int, transitions:int, initial_temperature:float, verbose:Union[str, Callable]=None) -> list:
 	# generate an initial point
 	best = initial_point
 	# evaluate the initial point
@@ -41,10 +41,16 @@ def simulated_anneal(initial_point, step_function:Callable, objective_function:C
 
 			# report progress
 			if verbose:
-				metropolis_acceptance = f"[{random_point:1.5f} vs {metropolis:1.5f}]"
+				# set step counter string
 				step_counter = f"[it:{i:0{len(str(iterations))}}|tr:{j:0{len(str(transitions))}}|te:{current_temperature:.2f}]>"
-				buffer_evaluation = f"""{f'f({str(buffer)[:25]}{"..." if len(str(buffer)) > 25 else ""}) = ' if verbose == "long" else ''}{buffer_evaluated:10.2f}"""
-				print(f"{step_counter} {buffer_evaluation} | CURRENT: {current_evaluated:10.2f} | BEST: {best_evaluated:10.2f} || DIFF: {diff:10.2f} | MET: {metropolis_acceptance}")
+				
+				# print log
+				if verbose == "long" or verbose == "short": # if built-in verbose
+					metropolis_acceptance = f"[{random_point:1.5f} vs {metropolis:1.5f}]"
+					buffer_evaluation = f"""{f'f({str(buffer)[:25]}{"..." if len(str(buffer)) > 25 else ""}) = ' if verbose == "long" else ''}{buffer_evaluated:10.2f}"""
+					print(f"{step_counter} {buffer_evaluation} | CURRENT: {current_evaluated:10.2f} | BEST: {best_evaluated:10.2f} || DIFF: {diff:10.2f} | MET: {metropolis_acceptance}")
+				elif callable(verbose): # if custom verbose function
+					print(f"{step_counter} {current_evaluated:7.0f} | {verbose(key=current)}")
 
 		# calculate temperature for new epoch 
 		current_temperature = annealing_schedule_function(current_temperature)
