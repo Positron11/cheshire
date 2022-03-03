@@ -33,12 +33,24 @@ def objective_function(key):
 
 # custom verbose function
 def custom_verbose_function(**kwargs):
-	decrypted = machine.decrypt(ciphertext)
-	current_evaluated = kwargs['current_evaluated']
-	current_key = ''.join(linearize_key(kwargs['current']))
-	best_evaluated = kwargs['best_evaluated']
-	best_key = ''.join(linearize_key(kwargs['best']))
-	return f"{decrypted}\nKey: {current_key} ({current_evaluated}) | Best: {best_key} ({best_evaluated})\n"
+	# get keys
+	buffer_key = linearize_key(kwargs['buffer'])
+	current_key = linearize_key(kwargs['current'])
+	best_key = linearize_key(kwargs['best'])
+
+	# get decrypted texts
+	machine.set_alphabet(buffer_key)
+	buffer_decrypted = machine.decrypt(ciphertext)
+	machine.set_alphabet(current_key)
+	current_decrypted = machine.decrypt(ciphertext)
+	machine.set_alphabet(best_key)
+	best_decrypted = machine.decrypt(ciphertext)
+
+	# print log
+	buffer_string = f"Buff || Key: {''.join(buffer_key)} | Decrypted: {buffer_decrypted} | Score: {kwargs['buffer_evaluated']}"
+	current_string = f"Curr || Key: {''.join(current_key)} | Decrypted: {current_decrypted} | Score: {kwargs['current_evaluated']}"
+	best_string = f"Best || Key: {''.join(best_key)} | Decrypted: {best_decrypted} | Score: {kwargs['best_evaluated']}"
+	return f"⤵\n{buffer_string}\n{current_string}\n{best_string}\n"
 
 try:
 	# anneal

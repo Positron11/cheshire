@@ -56,7 +56,7 @@ def simulated_anneal(initial_point, step_function:Callable, objective_function:C
 						buffer_evaluation = f"""{f'f({str(buffer)[:25]}{"..." if len(str(buffer)) > 25 else ""}) = ' if verbose == "long" else ''}{buffer_evaluated:10.2f}"""
 						print(f"{step_counter} {buffer_evaluation} | CURRENT: {current_evaluated:10.2f} | BEST: {best_evaluated:10.2f} || DIFF: {diff:10.2f} | MET: {metropolis_acceptance}")
 					elif callable(verbose): # if custom verbose function
-						print(f"{step_counter} {current_evaluated:7.0f} | {verbose(current=current, best=best, current_evaluated=current_evaluated, best_evaluated=best_evaluated)}")
+						print(f"{step_counter} {verbose(buffer=buffer, current=current, best=best, buffer_evaluated=buffer_evaluated, current_evaluated=current_evaluated, best_evaluated=best_evaluated)}")
 
 				# reset if exceeded non-improving step limit
 				if non_improving_steps > max_non_improving_steps:
