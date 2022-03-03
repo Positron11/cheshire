@@ -1,3 +1,4 @@
+from copy import deepcopy
 from numpy.random import rand
 from random import shuffle, randint
 
@@ -24,6 +25,9 @@ def linearize_key(key:list) -> list:
 
 # shuffle playfair cipher key
 def shuffle_key(key:list, mode:str="", shuffles:int=1) -> list:
+	# create deepcopy of key
+	new_key = deepcopy(key)
+
 	# for number of shuffles
 	for shuffle in range(shuffles):
 		# get random value between 0 and 1
@@ -31,17 +35,17 @@ def shuffle_key(key:list, mode:str="", shuffles:int=1) -> list:
 
 		# reverse key
 		if (not mode and 0.98 <= selector < 1.00) or mode == "rwk":
-			key.reverse()
-			for row in key:
+			new_key.reverse()
+			for row in new_key:
 				row.reverse()
 
 		# flip all columns
 		if (not mode and 0.96 <= selector < 0.98) or mode == "rac":
-			key.reverse()
+			new_key.reverse()
 
 		# flip all rows
 		if (not mode and 0.94 <= selector < 0.96) or mode == "rar":
-			for row in key:
+			for row in new_key:
 				row.reverse()
 
 		# flip random column
@@ -50,16 +54,16 @@ def shuffle_key(key:list, mode:str="", shuffles:int=1) -> list:
 			column_index = randint(0,4)
 
 			# construct and reverse column list
-			column = [row[column_index] for row in key]
+			column = [row[column_index] for row in new_key]
 			column.reverse()
 
 			# substitute reversed column values into key
-			for row in key:
-				row[column_index] = column[key.index(row)]
+			for row in new_key:
+				row[column_index] = column[new_key.index(row)]
 
 		# flip random row
 		if (not mode and 0.90 <= selector < 0.92) or mode == "rrr":
-			key[randint(0,4)].reverse()
+			new_key[randint(0,4)].reverse()
 
 		# swap two random letters
 		if (not mode and 0 <= selector < 0.90) or mode == "swp":
@@ -71,6 +75,6 @@ def shuffle_key(key:list, mode:str="", shuffles:int=1) -> list:
 				x, y, i, j = randint(0,4), randint(0,4), randint(0,4), randint(0,4)
 
 			# swap values
-			key[x][y], key[i][j] = key[i][j], key[x][y]
+			new_key[x][y], new_key[i][j] = new_key[i][j], new_key[x][y]
 	
-	return key
+	return new_key
