@@ -2,7 +2,7 @@ from numpy import exp, random
 from typing import Callable, Union
 
 # simulated annealing algorithm
-def simulated_anneal(initial_point, step_function:Callable, objective_function:Callable, annealing_schedule_function:Callable, iterations:int, transitions:int, initial_temperature:float, verbose:Union[str, Callable]=None) -> list:
+def simulated_anneal(initial_point, step_function:Callable, objective_function:Callable, annealing_schedule_function:Callable, iterations:int, transitions:int, max_non_improving_steps:int, initial_temperature:float, verbose:Union[str, Callable]=None) -> list:
 	# generate an initial point
 	best = initial_point
 	# evaluate the initial point
@@ -12,6 +12,9 @@ def simulated_anneal(initial_point, step_function:Callable, objective_function:C
 
 	# set current temperature
 	current_temperature = initial_temperature
+
+	# create non-improving counter
+	non_improving_steps = 0
 
 	# run the algorithm
 	for i in range(iterations):
@@ -26,6 +29,8 @@ def simulated_anneal(initial_point, step_function:Callable, objective_function:C
 			if buffer_evaluated < best_evaluated:
 				# set best point to current buffer ppoint
 				best, best_evaluated = buffer, buffer_evaluated
+			else:
+				non_improving_steps += 1
 
 			# ...otherwise find difference between buffer and current point evaluations
 			diff = buffer_evaluated - current_evaluated
@@ -51,6 +56,11 @@ def simulated_anneal(initial_point, step_function:Callable, objective_function:C
 					print(f"{step_counter} {buffer_evaluation} | CURRENT: {current_evaluated:10.2f} | BEST: {best_evaluated:10.2f} || DIFF: {diff:10.2f} | MET: {metropolis_acceptance}")
 				elif callable(verbose): # if custom verbose function
 					print(f"{step_counter} {current_evaluated:7.0f} | {verbose(key=current)}")
+
+			# reset if exceeded non-improving step limit
+			if non_improving_steps > max_non_improving_steps:
+				non_improving_steps = 0
+				current = best
 
 		# calculate temperature for new epoch 
 		current_temperature = annealing_schedule_function(current_temperature)

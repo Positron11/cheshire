@@ -42,6 +42,7 @@ best, score = simulated_anneal(
 	step_function=shuffle_key, 
 	annealing_schedule_function=annealing_schedule, 
 	iterations=500, transitions=100,
+	max_non_improving_steps=250,
 	initial_temperature=100000, 
 	verbose="short"
 )
