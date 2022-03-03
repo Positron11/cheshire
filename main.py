@@ -62,7 +62,7 @@ try:
 		iterations=500, transitions=100,
 		max_non_improving_steps=250,
 		initial_temperature=100000, 
-		verbose="short"
+		verbose=custom_verbose_function
 	)
 
 	# decrypt ciphertext with obtained key
