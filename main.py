@@ -58,7 +58,7 @@ try:
 	machine.set_alphabet(final_key)
 	
 	# print result
-	print(f"\n***\nKey: {''.join(final_key)}\nDecrypted: {machine.decrypt(ciphertext)}\nScore: {score:.0f}")
+	print(f"\n***\n\nKey: {''.join(final_key)}\nDecrypted: {machine.decrypt(ciphertext)}\nScore: {score:.0f}")
 
 # if keyboard interrupt signal sent, do before exiting
 except KeyboardInterrupt:
@@ -67,7 +67,7 @@ except KeyboardInterrupt:
 	machine.set_alphabet(final_key)
 	
 	# print result
-	print(f"\n***\nKey: {''.join(final_key)}\nDecrypted: {machine.decrypt(ciphertext)}\nScore: {score:.0f}")
+	print(f"\n***\n\nKey: {''.join(final_key)}\nDecrypted: {machine.decrypt(ciphertext)}\nScore: {score:.0f}")
 
 # close dataset and test file
 dataset.close()
