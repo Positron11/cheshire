@@ -40,21 +40,34 @@ def custom_verbose_function(**kwargs):
 	best_key = ''.join(linearize_key(kwargs['best']))
 	return f"{decrypted}\nKey: {current_key} ({current_evaluated}) | Best: {best_key} ({best_evaluated})\n"
 
-# anneal
-best, score = simulated_anneal(
-	initial_point=generate_key(ciphertext), 
-	objective_function=objective_function, 
-	step_function=shuffle_key, 
-	annealing_schedule_function=annealing_schedule, 
-	iterations=500, transitions=100,
-	max_non_improving_steps=250,
-	initial_temperature=100000, 
-	verbose="short"
-)
+try:
+	# anneal
+	best, score = simulated_anneal(
+		initial_point=generate_key(ciphertext), 
+		objective_function=objective_function, 
+		step_function=shuffle_key, 
+		annealing_schedule_function=annealing_schedule, 
+		iterations=500, transitions=100,
+		max_non_improving_steps=250,
+		initial_temperature=100000, 
+		verbose="short"
+	)
 
-# print result
-machine.set_alphabet(linearize_key(best))
-print(f"\n***\n\n{machine.decrypt(ciphertext)}")
+	# decrypt ciphertext with obtained key
+	final_key = linearize_key(best)
+	machine.set_alphabet(final_key)
+	
+	# print result
+	print(f"\n***\nKey: {''.join(final_key)}\nDecrypted: {machine.decrypt(ciphertext)}\nScore: {score:.0f}")
+
+# if keyboard interrupt signal sent, do before exiting
+except KeyboardInterrupt:
+	# decrypt ciphertext with obtained key
+	final_key = linearize_key(best)
+	machine.set_alphabet(final_key)
+	
+	# print result
+	print(f"\n***\nKey: {''.join(final_key)}\nDecrypted: {machine.decrypt(ciphertext)}\nScore: {score:.0f}")
 
 # close dataset and test file
 dataset.close()
