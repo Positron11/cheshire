@@ -3,7 +3,7 @@ import re, unicodedata
 from typing import TextIO
 
 # n-gram heuristic function
-def language_score(text_file:TextIO, ngram_length:int, ngram_type:str, frequency_dataset:TextIO, verbose:bool=False) -> float:
+def language_score(text_file:TextIO, ngram_length:int, ngram_type:str, frequency_dataset:dict, verbose:bool=False) -> float:
 	# sanitize text
 	sanitized_text = ''.join(c for c in unicodedata.normalize('NFD', text_file.read()) if unicodedata.category(c) != 'Mn')
 
@@ -21,39 +21,41 @@ def language_score(text_file:TextIO, ngram_length:int, ngram_type:str, frequency
 	ranked_ngrams = {ngram:ranked_ngram_frequencies.index(ngrams.count(ngram)) + 1 for ngram in ngrams}
 
 	# initialize scores and counts
-	language_score = 0
-	dataset_length = 0
-	ngrams_found = list()
+	dissimilarity_score = 0
+	unfound_ngrams = list()
+
+	# get frequency dataset length
+	dataset_length = len(frequency_dataset)
 
 	# go through each fourgram in dataset
-	for line_number, line in enumerate(frequency_dataset, 1):
-		# extract fourgram and frequency from line
-		data = {"ngram": line.split()[0], "frequency": line.split()[1]}
+	for ngram in ngrams:
+		# if fourgram in dataset
+		try:
+			# get rank difference
+			rank_diff = frequency_dataset[ngram] - ranked_ngrams[ngram]
 
-		# if fourgram in text
-		if data["ngram"] in ngrams:
 			# increment scores and counters
-			language_score += abs(line_number - ranked_ngrams[data["ngram"]])
-			ngrams_found.append(data["ngram"])
+			dissimilarity_score += abs(rank_diff)
 
 			# verbose output
 			if verbose:
-				print(f"found: {data['ngram']} | ngram diff: abs({line_number - ranked_ngrams[data['ngram']]}) | total score: {language_score}")
-	
-		# increment dataset ngram count
-		dataset_length += 1
+				print(f"found: {ngram} | ngram diff: abs({rank_diff}) | total score: {dissimilarity_score}")
+		
+		# if not in dataset
+		except:
+			unfound_ngrams.append(ngram)
 
-	# reset read pointers
+	# reset textfile read pointer
 	text_file.seek(0)
-	frequency_dataset.seek(0)
 
 	# add unfound ngram penalty and normalize score for text size
-	language_score = (language_score + ((len(ranked_ngrams) - len(ngrams_found)) * dataset_length)) / (len(ranked_ngrams) if ranked_ngrams else 1)
+	normalized_dissimilarity_score = (dissimilarity_score + (len(unfound_ngrams) * dataset_length)) / (len(ranked_ngrams) if ranked_ngrams else 1)
 	
 	# verbose output
 	if verbose:
-		print(f'\nUnfound: {", ".join([ngram for ngram in ranked_ngrams.keys() if ngram not in ngrams_found]) if len(ngrams_found) != len(ranked_ngrams.keys()) else "None"}')
-		print(f"Final score: {language_score:.3f}")
+		print(f'\n**\n\nUnfound: {", ".join(unfound_ngrams) if unfound_ngrams else "None"}')
+		print(f"Total Dissimilarity score: {dissimilarity_score:.3f}")
+		print(f"Normalized Dissimilarity score: {normalized_dissimilarity_score:.3f}")
 
 	# return final score
-	return language_score
+	return normalized_dissimilarity_score

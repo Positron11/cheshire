@@ -3,9 +3,27 @@ from Language_Detection.language_detection import language_score
 from Simulated_Annealing.simulated_annealing import simulated_anneal
 from Playfair_Keygen.playfair_keygen import generate_key, linearize_key, shuffle_key
 
-# open dataset and test file
-dataset = open(f"Language_Detection/Datasets/4grams_continuous.txt", "r")
-test_file = open("Plaintexts/plaintext_1.txt");
+# open test file 
+test_file = open("Plaintexts/wodehouse.txt");
+
+# construct dataset
+with open(f"Language_Detection/Datasets/4grams_continuous.txt") as frequency_dataset_file:
+	# initialize vars
+	dataset = dict()
+	rank_counter = 1
+	previous_frequency = -1
+
+	# go through each fourgram in dataset_file
+	for line in frequency_dataset_file:
+		# extract fourgram and assign rank
+		dataset[line.split()[0]] = rank_counter
+		 
+		# increment rank
+		if line.split()[1] != previous_frequency:
+			rank_counter += 1
+
+		# set previous frequency buffer
+		previous_frequency = line.split()[1]
 
 # create cryptmachine
 key = generate_key()

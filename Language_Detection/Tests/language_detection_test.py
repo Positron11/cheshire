@@ -9,8 +9,24 @@ transliteration_tests = [os.path.join("Language_Detection/Tests/Negative/Transli
 
 # for 2-grams and n-grams
 for n in range(2,5,2):
-	# open relevant wordwise n-gram dataset
-	dataset = open(f"Language_Detection/Datasets/{n}grams.txt", "r")
+	# construct dataset
+	with open(f"Language_Detection/Datasets/4grams.txt") as frequency_dataset_file:
+		# initialize vars
+		dataset = dict()
+		rank_counter = 1
+		previous_frequency = -1
+
+		# go through each fourgram in dataset_file
+		for line in frequency_dataset_file:
+			# extract fourgram and assign rank
+			dataset[line.split()[0]] = rank_counter
+			
+			# increment rank
+			if line.split()[1] != previous_frequency:
+				rank_counter += 1
+
+			# set previous frequency buffer
+			previous_frequency = line.split()[1]
 
 	# print header 
 	print(f"\n{n}-GRAM TESTS:\n=============")
@@ -35,6 +51,3 @@ for n in range(2,5,2):
 		positive_test.close()
 		ciphertext_test.close()
 		transliteration_test.close()
-
-	# close dataset
-	dataset.close()
