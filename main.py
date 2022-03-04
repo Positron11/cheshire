@@ -65,10 +65,10 @@ def custom_verbose_function(**kwargs):
 	best_decrypted = machine.decrypt(ciphertext)
 
 	# print log
-	buffer_string = f"Buff || Key: {''.join(buffer_key)} | Decrypted: {buffer_decrypted} | Score: {kwargs['buffer_evaluated']}"
-	current_string = f"Curr || Key: {''.join(current_key)} | Decrypted: {current_decrypted} | Score: {kwargs['current_evaluated']}"
-	best_string = f"Best || Key: {''.join(best_key)} | Decrypted: {best_decrypted} | Score: {kwargs['best_evaluated']}"
-	return f"⤵\n{buffer_string}\n{current_string}\n{best_string}\n"
+	buffer_string = f"BUFFER\n======\nDecrypted: {buffer_decrypted}\n--\nKey: {''.join(buffer_key)} (Score: {kwargs['buffer_evaluated']})"
+	current_string = f"CURRENT\n=======\nDecrypted: {current_decrypted}\n--\nKey: {''.join(current_key)} (Score: {kwargs['current_evaluated']})"
+	best_string = f"BEST\n====\nDecrypted: {best_decrypted}\n---\nKey: {''.join(best_key)} (Score: {kwargs['best_evaluated']})"
+	return f"⤵\n\n{buffer_string}\n\n{current_string}\n\n{best_string}\n\n"
 
 try:
 	# anneal
