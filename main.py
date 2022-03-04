@@ -99,7 +99,6 @@ except KeyboardInterrupt:
 	# print result
 	print(f"\n***\n\nKey: {''.join(final_key)}\nDecrypted: {machine.decrypt(ciphertext)}\nScore: {score:.0f}")
 
-# close dataset and test file
-dataset.close()
+# close test file
 test_file.close()
 
