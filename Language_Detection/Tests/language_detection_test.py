@@ -10,7 +10,7 @@ transliteration_tests = [os.path.join("Language_Detection/Tests/Negative/Transli
 # for 2-grams and n-grams
 for n in range(2,5,2):
 	# construct dataset
-	with open(f"Language_Detection/Datasets/4grams.txt") as frequency_dataset_file:
+	with open(f"Language_Detection/Datasets/{n}grams.txt") as frequency_dataset_file:
 		# initialize vars
 		dataset = dict()
 		rank_counter = 1
