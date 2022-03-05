@@ -64,6 +64,18 @@ def custom_verbose_function(**kwargs):
 	best_string = f"BEST\n====\nDecrypted: {best_decrypted}\n---\nKey: {''.join(best_key)} (Score: {kwargs['best_evaluated']})"
 	return f"⤵\n\n{buffer_string}\n\n{current_string}\n\n{best_string}\n\n"
 
+# print result function
+def get_result(best, encryption_key, encrypted_score, decrypted_score):
+	# decrypt ciphertext with obtained key
+	decryption_key = linearize_key(best)
+	machine.set_alphabet(decryption_key)
+	decrypted = machine.decrypt(ciphertext)
+	
+	# print result to stdout and file
+	print(f"\n***\n\nEncryption key: {''.join(linearize_key(encryption_key))}\nDecryption key: {''.join(decryption_key)}\n\nDecrypted: {decrypted}\n\nEncrypted Score: {encrypted_score:.0f}\nDecrypted Score: {decrypted_score:.0f}")
+	with open("decrypted.txt", "w") as output_file:
+		print(decrypted, file=output_file)
+
 try:
 	# anneal
 	best, decrypted_score = simulated_anneal(
@@ -77,19 +89,8 @@ try:
 		verbose=custom_verbose_function
 	)
 
-	# decrypt ciphertext with obtained key
-	decryption_key = linearize_key(best)
-	machine.set_alphabet(decryption_key)
-	
-	# print result
-	print(f"\n***\n\nEncryption key: {''.join(linearize_key(encryption_key))}\nDecryption key: {''.join(decryption_key)}\n\nDecrypted: {machine.decrypt(ciphertext)}\n\nEncrypted Score: {encrypted_score:.0f}\nDecrypted Score: {decrypted_score:.0f}")
+	get_result(best, encryption_key, encrypted_score, decrypted_score)
 
 # if keyboard interrupt signal sent, do before exiting
 except KeyboardInterrupt:
-	# decrypt ciphertext with obtained key
-	decryption_key = linearize_key(best)
-	machine.set_alphabet(decryption_key)
-	
-	# print result
-	print(f"\n***\n\nEncryption key: {''.join(linearize_key(encryption_key))}\nDecryption key: {''.join(decryption_key)}\n\nDecrypted: {machine.decrypt(ciphertext)}\n\nEncrypted Score: {encrypted_score:.0f}\nDecrypted Score: {decrypted_score:.0f}")
-
+	get_result(best, encryption_key, encrypted_score, decrypted_score)
