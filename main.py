@@ -65,9 +65,9 @@ def custom_verbose_function(**kwargs):
 	best_decrypted = machine.decrypt(ciphertext)
 
 	# print log
-	buffer_string = f"BUFFER\n======\nDecrypted: {buffer_decrypted}\n--\nKey: {''.join(buffer_key)} (Score: {kwargs['buffer_evaluated']})"
-	current_string = f"CURRENT\n=======\nDecrypted: {current_decrypted}\n--\nKey: {''.join(current_key)} (Score: {kwargs['current_evaluated']})"
-	best_string = f"BEST\n====\nDecrypted: {best_decrypted}\n---\nKey: {''.join(best_key)} (Score: {kwargs['best_evaluated']})"
+	buffer_string = f"BUFFER\n======\nDecrypted: {buffer_decrypted}\n--\nKey: {''.join(buffer_key)} (Score: {kwargs['buffer_evaluated']:.0f})"
+	current_string = f"CURRENT\n=======\nDecrypted: {current_decrypted}\n--\nKey: {''.join(current_key)} (Score: {kwargs['current_evaluated']:.0f})"
+	best_string = f"BEST\n====\nDecrypted: {best_decrypted}\n---\nKey: {''.join(best_key)} (Score: {kwargs['best_evaluated']:.0f})"
 	return f"⤵\n\n{buffer_string}\n\n{current_string}\n\n{best_string}\n\n"
 
 
