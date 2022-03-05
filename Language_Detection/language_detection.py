@@ -3,9 +3,9 @@ import re, unicodedata
 from typing import TextIO
 
 # n-gram heuristic function
-def language_score(text_file:TextIO, ngram_length:int, ngram_type:str, frequency_dataset:dict, verbose:bool=False) -> float:
+def language_score(text:str, ngram_length:int, ngram_type:str, frequency_dataset:dict, verbose:bool=False) -> float:
 	# sanitize text
-	sanitized_text = ''.join(c for c in unicodedata.normalize('NFD', text_file.read()) if unicodedata.category(c) != 'Mn')
+	sanitized_text = ''.join(c for c in unicodedata.normalize('NFD', text) if unicodedata.category(c) != 'Mn')
 
 	# strip non-alphabetic characters and extract ngrams from stripped text
 	if ngram_type == "word": # word-by-word ngram extraction
@@ -44,9 +44,6 @@ def language_score(text_file:TextIO, ngram_length:int, ngram_type:str, frequency
 		# if not in dataset
 		except:
 			unfound_ngrams.append(ngram)
-
-	# reset textfile read pointer
-	text_file.seek(0)
 
 	# add unfound ngram penalty and normalize score for text size
 	normalized_dissimilarity_score = (dissimilarity_score + (len(unfound_ngrams) * dataset_length)) / (len(ranked_ngrams) if ranked_ngrams else 1)

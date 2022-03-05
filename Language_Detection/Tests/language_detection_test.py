@@ -33,10 +33,13 @@ for n in range(2,5,2):
 
 	# run tests
 	for i in range(len(positive_tests)):
-		# open test files
-		positive_test = open(positive_tests[i])
-		ciphertext_test = open(ciphertext_tests[i])
-		transliteration_test = open(transliteration_tests[i])
+		# read test files
+		with open(positive_tests[i]) as positive_test_textfile:
+			positive_test = positive_test_textfile.read()
+		with open(ciphertext_tests[i]) as ciphertext_test_textfile:
+			ciphertext_test = ciphertext_test_textfile.read()
+		with open(transliteration_tests[i]) as transliteration_test_textfile:
+			transliteration_test = transliteration_test_textfile.read()
 
 		# run tests
 		positive_test_result = language_score(positive_test, n, 'word', dataset)
@@ -46,8 +49,3 @@ for n in range(2,5,2):
 		# print test results
 		filename = positive_tests[i].split("/")[-1].split(" - ")[0]
 		print(f"""{filename.split(' - ')[0]:18} || Positive: {positive_test_result:4.0f} | Ciphertext: {ciphertext_test_result:5.0f} | Transliteration: {transliteration_test_result:5.0f}""")
-
-		# close test files
-		positive_test.close()
-		ciphertext_test.close()
-		transliteration_test.close()
