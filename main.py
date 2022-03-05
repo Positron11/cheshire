@@ -30,6 +30,7 @@ machine.set_alphabet(linearize_key(encryption_key))
 # encrypt plaintext file
 with open("Plaintexts/plaintext_1.txt") as test_file:
 	ciphertext = machine.encrypt(test_file.read())
+	encrypted_score = language_score(text=ciphertext, ngram_length=4, ngram_type="continuous", frequency_dataset=dataset)
 
 # annealing scedule function
 def annealing_schedule(current_temperature):
@@ -65,7 +66,7 @@ def custom_verbose_function(**kwargs):
 
 try:
 	# anneal
-	best, score = simulated_anneal(
+	best, decrypted_score = simulated_anneal(
 		initial_point=generate_key(ciphertext), 
 		objective_function=objective_function, 
 		step_function=shuffle_key, 
@@ -81,7 +82,7 @@ try:
 	machine.set_alphabet(decryption_key)
 	
 	# print result
-	print(f"\n***\n\nEncryption key: {''.join(linearize_key(encryption_key))}\nDecryption key: {''.join(decryption_key)}\n\nDecrypted: {machine.decrypt(ciphertext)}\n\nScore: {score:.0f}")
+	print(f"\n***\n\nEncryption key: {''.join(linearize_key(encryption_key))}\nDecryption key: {''.join(decryption_key)}\n\nDecrypted: {machine.decrypt(ciphertext)}\n\nEncrypted Score: {encrypted_score:.0f}\nDecrypted Score: {decrypted_score:.0f}")
 
 # if keyboard interrupt signal sent, do before exiting
 except KeyboardInterrupt:
@@ -90,8 +91,5 @@ except KeyboardInterrupt:
 	machine.set_alphabet(decryption_key)
 	
 	# print result
-	print(f"\n***\n\nEncryption key: {''.join(linearize_key(encryption_key))}\nDecryption key: {''.join(decryption_key)}\n\nDecrypted: {machine.decrypt(ciphertext)}\n\nScore: {score:.0f}")
-
-# close test file
-test_file.close()
+	print(f"\n***\n\nEncryption key: {''.join(linearize_key(encryption_key))}\nDecryption key: {''.join(decryption_key)}\n\nDecrypted: {machine.decrypt(ciphertext)}\n\nEncrypted Score: {encrypted_score:.0f}\nDecrypted Score: {decrypted_score:.0f}")
 
