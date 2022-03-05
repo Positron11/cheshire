@@ -3,6 +3,7 @@ from Language_Detection.language_detection import language_score
 from Simulated_Annealing.simulated_annealing import simulated_anneal
 from Playfair_Keygen.playfair_keygen import generate_key, linearize_key, shuffle_key
 
+
 # construct dataset
 with open(f"Language_Detection/Datasets/4grams_continuous.txt") as frequency_dataset_file:
 	# initialize vars
@@ -22,6 +23,7 @@ with open(f"Language_Detection/Datasets/4grams_continuous.txt") as frequency_dat
 		# set previous frequency buffer
 		previous_frequency = line.split()[1]
 
+
 # create cryptmachine
 encryption_key = generate_key()
 machine = CryptMachine(Playfair())
@@ -32,16 +34,20 @@ with open("Plaintexts/plaintext_1.txt") as test_file:
 	ciphertext = machine.encrypt(test_file.read())
 	encrypted_score = language_score(text=ciphertext, ngram_length=4, ngram_type="continuous", frequency_dataset=dataset)
 
-# annealing scedule function
+
+# annealing schedule function
 def annealing_schedule(current_temperature):
 	return (0.93 * current_temperature) + 10
 
+
+# objective key evaluation function
 def objective_function(key):
 	# set key
 	machine.set_alphabet(linearize_key(key))
 
 	# calculate language score
 	return language_score(text=machine.decrypt(ciphertext), ngram_length=4, ngram_type="continuous", frequency_dataset=dataset)
+
 
 # custom verbose function
 def custom_verbose_function(**kwargs):
@@ -64,6 +70,7 @@ def custom_verbose_function(**kwargs):
 	best_string = f"BEST\n====\nDecrypted: {best_decrypted}\n---\nKey: {''.join(best_key)} (Score: {kwargs['best_evaluated']})"
 	return f"⤵\n\n{buffer_string}\n\n{current_string}\n\n{best_string}\n\n"
 
+
 # print result function
 def get_result(best, encryption_key, encrypted_score, decrypted_score):
 	# decrypt ciphertext with obtained key
@@ -76,6 +83,8 @@ def get_result(best, encryption_key, encrypted_score, decrypted_score):
 	with open("decrypted.txt", "w") as output_file:
 		print(decrypted, file=output_file)
 
+
+# run simulation
 try:
 	# anneal
 	best, decrypted_score = simulated_anneal(
