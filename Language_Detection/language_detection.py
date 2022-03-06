@@ -4,16 +4,8 @@ from typing import TextIO
 
 # n-gram heuristic function
 def language_score(text:str, ngram_length:int, ngram_type:str, frequency_dataset:dict, verbose:bool=False) -> float:
-	# sanitize text
-	sanitized_text = ''.join(c for c in unicodedata.normalize('NFD', text) if unicodedata.category(c) != 'Mn')
-
-	# strip non-alphabetic characters and extract ngrams from stripped text
-	if ngram_type == "word": # word-by-word ngram extraction
-		stripped_text = re.sub('[^a-zA-Z ]+', '', sanitized_text).upper()
-		ngrams = [word[i:i+ngram_length] for word in stripped_text.split() for i in range(len(word) - (ngram_length - 1))]
-	elif ngram_type == "continuous": # continuous (between words) ngram extraction
-		stripped_text = re.sub('[^a-zA-Z]+', '', sanitized_text).upper()
-		ngrams = [stripped_text[i:i+ngram_length] for i in range(len(stripped_text) - (ngram_length - 1))]
+	# extract ngrams from text
+	ngrams = extract_ngrams(text, ngram_length, ngram_type)
 	
 	# create ngram ranked dictionary
 	ngram_frequencies = [ngrams.count(ngram) for ngram in ngrams]
@@ -56,3 +48,28 @@ def language_score(text:str, ngram_length:int, ngram_type:str, frequency_dataset
 
 	# return final score
 	return normalized_dissimilarity_score
+
+
+# ngram extractor function
+def extract_ngrams(text:str, ngram_length:int, ngram_type:str) -> list:
+	# sanitize text
+	sanitized_text = ''.join(c for c in unicodedata.normalize('NFD', text) if unicodedata.category(c) != 'Mn')
+
+	# strip non-alphabetic characters and extract ngrams from stripped text
+	if ngram_type == "word": # word-by-word ngram extraction
+		stripped_text = re.sub('[^a-zA-Z ]+', '', sanitized_text).upper()
+		return [word[i:i+ngram_length] for word in stripped_text.split() for i in range(len(word) - (ngram_length - 1))]
+	elif ngram_type == "continuous": # continuous (between words) ngram extraction
+		stripped_text = re.sub('[^a-zA-Z]+', '', sanitized_text).upper()
+		return [stripped_text[i:i+ngram_length] for i in range(len(stripped_text) - (ngram_length - 1))]
+	else:
+		raise NgramTypeError(ngram_type)
+
+
+# ngram type exception
+class NgramTypeError(Exception):
+    def __init__(self, ngram_type=None):
+        self.ngram_type = ngram_type
+
+    def __str__(self):
+        return f"""Invalid ngram type {'"' + self.ngram_type + '"' if self.ngram_type else ''}"""
