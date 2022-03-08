@@ -1,6 +1,5 @@
 from numpy import abs
 import re, unicodedata
-from typing import TextIO
 
 # n-gram heuristic function
 def language_score(text:str, ngram_length:int, ngram_type:str, frequency_dataset:dict, verbose:bool=False) -> float:
