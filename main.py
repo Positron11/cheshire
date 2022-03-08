@@ -38,7 +38,7 @@ with open("Plaintexts/plaintext_1.txt") as test_file:
 
 # annealing schedule function
 def annealing_schedule(current_temperature):
-	return (0.93 * current_temperature) + 10
+	return (0.925 * current_temperature) + 10
 
 
 # objective key evaluation function
