@@ -31,7 +31,8 @@ machine.set_alphabet(linearize_key(encryption_key))
 
 # encrypt plaintext file
 with open("Plaintexts/plaintext_1.txt") as test_file:
-	ciphertext = machine.encrypt(test_file.read())
+	plaintext = test_file.read()
+	ciphertext = machine.encrypt(plaintext)
 	encrypted_score = language_score(text=ciphertext, ngram_length=4, ngram_type="continuous", frequency_dataset=dataset)
 
 
@@ -65,21 +66,21 @@ def custom_verbose_function(**kwargs):
 	best_decrypted = machine.decrypt(ciphertext)
 
 	# print log
-	buffer_string = f"BUFFER\n======\nDecrypted: {buffer_decrypted}\n--\nKey: {''.join(buffer_key)} (Score: {kwargs['buffer_evaluated']:.0f})"
-	current_string = f"CURRENT\n=======\nDecrypted: {current_decrypted}\n--\nKey: {''.join(current_key)} (Score: {kwargs['current_evaluated']:.0f})"
+	buffer_string = f"BUFFER\n======\nDecrypted: {buffer_decrypted}\n---\nKey: {''.join(buffer_key)} (Score: {kwargs['buffer_evaluated']:.0f})"
+	current_string = f"CURRENT\n=======\nDecrypted: {current_decrypted}\n---\nKey: {''.join(current_key)} (Score: {kwargs['current_evaluated']:.0f})"
 	best_string = f"BEST\n====\nDecrypted: {best_decrypted}\n---\nKey: {''.join(best_key)} (Score: {kwargs['best_evaluated']:.0f})"
 	return f"⤵\n\n{buffer_string}\n\n{current_string}\n\n{best_string}\n\n"
 
 
 # print result function
-def get_result(best, encryption_key, encrypted_score, decrypted_score):
+def get_result(best, encryption_key, plaintext, ciphertext, encrypted_score, decrypted_score):
 	# decrypt ciphertext with obtained key
 	decryption_key = linearize_key(best)
 	machine.set_alphabet(decryption_key)
 	decrypted = machine.decrypt(ciphertext)
 	
 	# print result to stdout and file
-	print(f"\n***\n\nEncryption key: {''.join(linearize_key(encryption_key))}\nDecryption key: {''.join(decryption_key)}\n\nDecrypted: {decrypted}\n\nEncrypted Score: {encrypted_score:.0f}\nDecrypted Score: {decrypted_score:.0f}")
+	print(f"\n***\n\nEncryption key: {''.join(linearize_key(encryption_key))}\nDecryption key: {''.join(decryption_key)}\n---\nOriginal: {plaintext}\n---\nDecrypted: {decrypted}\n---\nEncrypted Score: {encrypted_score:.0f}\nDecrypted Score: {decrypted_score:.0f}")
 	with open("decrypted.txt", "w") as output_file:
 		print(decrypted, file=output_file)
 
@@ -98,8 +99,8 @@ try:
 		verbose=custom_verbose_function
 	)
 
-	get_result(best, encryption_key, encrypted_score, decrypted_score)
+	get_result(best, encryption_key, plaintext, ciphertext, encrypted_score, decrypted_score)
 
 # if keyboard interrupt signal sent, do before exiting
 except KeyboardInterrupt:
-	get_result(best, encryption_key, encrypted_score, decrypted_score)
+	get_result(best, encryption_key, plaintext, ciphertext, encrypted_score, decrypted_score)
