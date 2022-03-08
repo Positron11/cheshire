@@ -93,8 +93,8 @@ try:
 		objective_function=objective_function, 
 		step_function=shuffle_key, 
 		annealing_schedule_function=annealing_schedule, 
-		iterations=100, transitions=10000,
-		max_non_improving_steps=10000,
+		iterations=100, transitions=20000,
+		max_non_improving_steps=2000,
 		initial_temperature=100000, 
 		verbose=custom_verbose_function
 	)
