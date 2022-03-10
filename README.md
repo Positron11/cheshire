@@ -13,7 +13,7 @@ The idea for the name came to me when I began to try and understand how stochast
 > **Alice Liddell:** I don't much care where-  
 > **Cheshire Cat:** Then it doesn't much matter which way you go.  
 > **Alice Liddell:** ...so long as I get somewhere.  
-> **Cheshire Cat:** Oh, you're sure to do that, if only you walk long enough."
+> **Cheshire Cat:** Oh, you're sure to do that, if only you walk long enough.
 > 
 > _- Lewis Carrol, Alice's Adventures in Wonderland_
 
